@@ -45,5 +45,20 @@ namespace Tourism.FeatureTests
 
             return context;
         }
+
+        [Fact]
+        public async Task Show_ReturnsAState()
+        {
+            var context = GetDbContext();
+            context.States.Add(new State { Name = "Colorado", Abbreviation = "CO" });
+            context.SaveChanges();
+
+            var client = _factory.CreateClient();
+
+            var response = await client.GetAsync("/states");
+            var html = await response.Content.ReadAsStringAsync();
+
+            Assert.Contains("Colorado", html);
+        }
     }
 }
